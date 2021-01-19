@@ -7,6 +7,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 const morgan = require('morgan');
 app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 
 
@@ -36,10 +38,17 @@ app.get("/", (req, res) => {
 });
 app.get("/urls", (req, res) => {
   const templateVars = { urls: urlDatabase };
+  if (req.cookies['username'] !== null) {
+    templateVars['username'] = req.cookies['username']
+  } else {templateVars['username'] = null };
   res.render("pages/urls_index", templateVars);
 });
 app.get("/urls/new", (req, res) => {
-  res.render("pages/urls_new");
+  const templateVars = {};
+  if (req.cookies['username'] !== null) {
+    templateVars['username'] = req.cookies['username']
+  } else {templateVars['username'] = null };
+  res.render("pages/urls_new", templateVars);
 });
 app.post("/urls", (req, res) => {
   //console.log(req.body);  // Log the POST request body to the console
@@ -52,7 +61,10 @@ app.get("/urls/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
   //console.log(shortURL);
   //console.log(urlDatabase[shortURL]);
-  const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL]};
+  const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL] };
+  if (req.cookies['username'] !== null) {
+    templateVars['username'] = req.cookies['username']
+  } else {templateVars['username'] = null };
   res.render("pages/urls_show", templateVars);
 });
 app.get("/u/:shortURL", (req, res) => {
@@ -70,6 +82,15 @@ app.post("/urls/:id", (req, res) => {
   //console.log(urlDatabase[shortURL]);
   res.redirect(`/urls`);
 })
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+  res.redirect(`/urls`);
+})
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  req.body.username = null;
+  res.redirect(`/urls`);
+});
 
 
 
