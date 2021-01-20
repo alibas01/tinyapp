@@ -9,6 +9,8 @@ app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+const {generateRandomString} = require("./helpers/userHelper");
+
 
 
 
@@ -19,18 +21,20 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const generateRandomString = function() {
-  let result = '';
-  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  for (var i = 0; i < 7; i++) {
-    if (i === 0) {
-      result = chars[11 + Math.floor(Math.random() * 52)];
-    } else {
-    result += chars[Math.floor(Math.random() * 62)];
-    }
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
   }
-  return result;
-};
+}
+
+
 
 
 app.get("/", (req, res) => {
@@ -88,6 +92,7 @@ app.post("/login", (req, res) => {
 })
 app.post("/logout", (req, res) => {
   res.clearCookie('username');
+  res.clearCookie('user_id');
   req.body.username = null;
   res.redirect(`/urls`);
 });
@@ -96,14 +101,16 @@ app.get("/register", (req, res) => {
   let password = req.body.password;
   const templateVars = { email, password };
   res.render("pages/urls_register", templateVars);
-})
-
-
-
-
-
-app.get("/hello", (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
+});
+app.post("/register", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  let id = generateRandomString();
+  let newUser = {id, email, password};
+  users[id] = newUser;
+  res.cookie('user_id', id);
+  console.log(users);
+  res.redirect("/urls");
 });
 
 
