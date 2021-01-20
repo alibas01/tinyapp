@@ -1,5 +1,5 @@
-// load the things we need
-const PORT = 8080; // default port 8080
+
+const PORT = 8080;
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
@@ -41,34 +41,24 @@ app.get("/", (req, res) => {
   res.send("<html><body><h1>Hello</h1> <h2><b>Hello! If you want to use tinyApp, please move to /urls page!</h2></b></body></html>\n")
 });
 app.get("/urls", (req, res) => {
-  const templateVars = { urls: urlDatabase };
-  if (req.cookies['username'] !== null) {
-    templateVars['username'] = req.cookies['username']
-  } else {templateVars['username'] = null };
+  const user = users[req.cookies['user_id']];
+  const templateVars = { urls: urlDatabase, user: user};
   res.render("pages/urls_index", templateVars);
 });
 app.get("/urls/new", (req, res) => {
-  const templateVars = {};
-  if (req.cookies['username'] !== null) {
-    templateVars['username'] = req.cookies['username']
-  } else {templateVars['username'] = null };
+  const user = users[req.cookies['user_id']];
+  const templateVars = {user: user};
   res.render("pages/urls_new", templateVars);
 });
 app.post("/urls", (req, res) => {
-  //console.log(req.body);  // Log the POST request body to the console
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = req.body.longURL;
-  res.redirect(`/urls/${shortURL}`);         // Respond with 'Ok' (we will replace this) 
+  res.redirect(`/urls/${shortURL}`);         
 });
 app.get("/urls/:shortURL", (req, res) => {
-  //console.log(urlDatabase);
+  const user = users[req.cookies['user_id']];
   let shortURL = req.params.shortURL;
-  //console.log(shortURL);
-  //console.log(urlDatabase[shortURL]);
-  const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL] };
-  if (req.cookies['username'] !== null) {
-    templateVars['username'] = req.cookies['username']
-  } else {templateVars['username'] = null };
+  const templateVars = { shortURL: shortURL, longURL: urlDatabase[shortURL], user: user};
   res.render("pages/urls_show", templateVars);
 });
 app.get("/u/:shortURL", (req, res) => {
@@ -83,7 +73,6 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   urlDatabase[shortURL] = req.body.newLongURL;
-  //console.log(urlDatabase[shortURL]);
   res.redirect(`/urls`);
 })
 app.post("/login", (req, res) => {

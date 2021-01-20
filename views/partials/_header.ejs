@@ -33,13 +33,13 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if (!username) { %>
+    <% if (!user) { %>
       <form method="POST" action="/login">
         <input type="text" name="username" value ="username">
         <button>Login </button>
       </form>
     <% } else { %>
-      <h6> Logged in as: <%= username %> ! </h6>
+      <h6> Logged in as: <%= user.email %> ! </h6>
       <form method="POST" action="/logout">
         <button>Logout </button>
       </form>
