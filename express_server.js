@@ -75,20 +75,11 @@ app.post("/urls/:id", (req, res) => {
   urlDatabase[shortURL] = req.body.newLongURL;
   res.redirect(`/urls`);
 })
-app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
-  res.redirect(`/urls`);
-})
-app.post("/logout", (req, res) => {
-  res.clearCookie('username');
-  res.clearCookie('user_id');
-  req.body.username = null;
-  res.redirect(`/urls`);
-});
 app.get("/register", (req, res) => {
+  const user = users[req.cookies['user_id']];
   let email = req.body.email;
   let password = req.body.password;
-  const templateVars = { email, password };
+  const templateVars = { email, password, user };
   res.render("pages/urls_register", templateVars);
 });
 app.post("/register", (req, res) => {
@@ -111,6 +102,23 @@ app.post("/register", (req, res) => {
     res.status(400);
     res.send('<html><body><h1>Hello</h1> <h2><b>Email & Password cannot be empty!!!</h2></b></body></html>\n');
   }
+});
+app.get("/login", (req, res) => {
+  const user = users[req.cookies['user_id']];
+  let email = req.body.loginEmail;
+  let password = req.body.loginPassword;
+  const templateVars = { email, password, user };
+  res.render("pages/urls_login", templateVars);
+});
+app.post("/login", (req, res) => {
+  //res.cookie('username', req.body.username);
+  res.redirect(`/login`);
+})
+app.post("/logout", (req, res) => {
+  res.clearCookie('username');
+  res.clearCookie('user_id');
+  req.body.username = null;
+  res.redirect(`/urls`);
 });
 
 
