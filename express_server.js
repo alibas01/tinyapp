@@ -91,6 +91,12 @@ app.post("/logout", (req, res) => {
   req.body.username = null;
   res.redirect(`/urls`);
 });
+app.get("/register", (req, res) => {
+  let email = req.body.email;
+  let password = req.body.password;
+  const templateVars = { email, password };
+  res.render("pages/urls_register", templateVars);
+})
 
 
 
