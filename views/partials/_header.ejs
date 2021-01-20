@@ -1,4 +1,26 @@
 <header>
+  <head><style>
+   h6{
+     display: inline-block;
+     position: absolute;
+     right: 120px;
+     top: 18px;
+     color: rgb(43, 43, 226);
+     font-family: Arial, Helvetica, sans-serif;
+   }
+    .nav button {
+      border-radius: 9px;
+      background-color: crimson;
+      color: whitesmoke;
+      box-shadow: rgba(0,0,0,.4) 10px 10px 10px;
+    }
+    .nav button:active {
+      position: relative;
+      left: 5px;
+      top:5px;
+      box-shadow: none;
+    }
+  </style></head>
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +38,7 @@
         <button>Login </button>
       </form>
     <% } else { %>
-      <h4> Logged in as: <%= username %> ! </h4>
+      <h6> Logged in as: <%= username %> ! </h6>
       <form method="POST" action="/logout">
         <button>Logout </button>
       </form>
