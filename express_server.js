@@ -9,7 +9,7 @@ app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-const {generateRandomString, isRegisteredBefore} = require("./helpers/userHelper");
+const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch} = require("./helpers/userHelper");
 
 
 
@@ -87,37 +87,47 @@ app.post("/register", (req, res) => {
   let password = req.body.password;
   if (email !== "" && password !== "") {
     if(!isRegisteredBefore(users, email)) {
-      console.log(isRegisteredBefore(users, email));
       let id = generateRandomString();
       let newUser = {id, email, password};
       users[id] = newUser;
       res.cookie('user_id', id);
-      console.log(users);
+      console.log(users);//
       res.redirect("/urls");
     } else {
       res.status(400);
-      res.send(`<html><body><h1>Hello</h1> <h2><b>This email(${email}) registered before!!!</h2></b></body></html>\n`);
+      res.send(`<html><body><h1>Error:400</h1> <h2><b>This email(${email}) registered before!!!</h2></b></body></html>\n`);
     }
   } else {
     res.status(400);
-    res.send('<html><body><h1>Hello</h1> <h2><b>Email & Password cannot be empty!!!</h2></b></body></html>\n');
+    res.send('<html><body><h1>Error:400</h1> <h2><b>Email or Password cannot be empty!!!</h2></b></body></html>\n');
   }
 });
 app.get("/login", (req, res) => {
   const user = users[req.cookies['user_id']];
-  let email = req.body.loginEmail;
-  let password = req.body.loginPassword;
-  const templateVars = { email, password, user };
+  let email = req.body.email;
+  let password = req.body.password;
+  const templateVars = { email: email, password: password, user: user };
   res.render("pages/urls_login", templateVars);
 });
 app.post("/login", (req, res) => {
-  //res.cookie('username', req.body.username);
-  res.redirect(`/login`);
-})
-app.post("/logout", (req, res) => {
-  res.clearCookie('username');
+  let email = req.body.email;
+  let password = req.body.password;
+  if(isRegisteredBefore(users, email)) {
+    if(isPasswordMatch(users, email, password)){
+      res.cookie('user_id', findId(users, email));
+      res.redirect(`/urls`);
+    } else {
+      res.status(403);
+      res.send(`<html><body><h1>Error:403</h1> <h2><b>Please check your password!!!</h2></b></body></html>\n`);
+    }
+  } else {
+    res.status(403);
+    res.send(`<html><body><h1>Error:403</h1> <h2><b>This email(${email}) is not registered!!!\n Please Register!</h2></b></body></html>\n`);
+  }
+});
+app.get("/logout", (req, res) => {
+  //res.clearCookie('username');
   res.clearCookie('user_id');
-  req.body.username = null;
   res.redirect(`/urls`);
 });
 

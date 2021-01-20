@@ -33,6 +33,25 @@ const isRegisteredBefore = function (users, email) {
   return false;
 };
 
+const findId = function (users, email) {
+  for (let id in users) {
+    if (users[id].email === email) {
+      return id;
+    } 
+  }
+  return null;
+};
+const isPasswordMatch = function (users, email, password) {
+  const id = findId(users, email)
+  for (let user in users) {
+    if (user === id && users[user].password === password) {
+      return true;
+    }
+  }
+  return false;
+}
 
 
-module.exports = { generateRandomString, isRegisteredBefore };
+
+
+module.exports = { generateRandomString, isRegisteredBefore, findId, isPasswordMatch };
