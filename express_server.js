@@ -9,7 +9,7 @@ app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
-const {generateRandomString} = require("./helpers/userHelper");
+const {generateRandomString, isRegisteredBefore} = require("./helpers/userHelper");
 
 
 
@@ -94,12 +94,23 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
-  let id = generateRandomString();
-  let newUser = {id, email, password};
-  users[id] = newUser;
-  res.cookie('user_id', id);
-  console.log(users);
-  res.redirect("/urls");
+  if (email !== "" && password !== "") {
+    if(!isRegisteredBefore(users, email)) {
+      console.log(isRegisteredBefore(users, email));
+      let id = generateRandomString();
+      let newUser = {id, email, password};
+      users[id] = newUser;
+      res.cookie('user_id', id);
+      console.log(users);
+      res.redirect("/urls");
+    } else {
+      res.status(400);
+      res.send(`<html><body><h1>Hello</h1> <h2><b>This email(${email}) registered before!!!</h2></b></body></html>\n`);
+    }
+  } else {
+    res.status(400);
+    res.send('<html><body><h1>Hello</h1> <h2><b>Email & Password cannot be empty!!!</h2></b></body></html>\n');
+  }
 });
 
 
