@@ -13,4 +13,4 @@ const generateRandomString = function() {
 
 
 
-module.exports = {generateRandomString};
+module.exports = { generateRandomString };
