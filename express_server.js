@@ -13,38 +13,31 @@ app.use(cookieSession({
   keys: ['key1', 'key2']
 }));
 const bcrypt = require('bcrypt');
-const salt = 10
+const salt = 10;
 const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter} = require("./helpers/userHelper");
-const fs = require('fs');
-
-
-
-
-
+//const fs = require('fs');
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
   aliBas: { longURL: "http://www.youtube.com", userID: "aJ48lW"}
-}
+};
 
 //fs.readFile(`./db/urlDatabase.json`, 'utf8', (data) => JSON.parse(data))
 
 
-  
-
-const users = { 
+const users = {
   "aJ48lW": {
-    id: "aJ48lW", 
-    email: "alibas01@gmail.com", 
+    id: "aJ48lW",
+    email: "alibas01@gmail.com",
     password: "12qw"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "dishwasher-funk"
   }
-}
+};
 
 
 
@@ -62,15 +55,15 @@ app.get("/urls/new", (req, res) => {
   const user = users[req.session['user_id']];
   const templateVars = {user: user};
   if (user !== undefined) {
-  res.render("pages/urls_new", templateVars);
+    res.render("pages/urls_new", templateVars);
   } else {
     res.redirect("/login");
   }
 });
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
-  urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.session['user_id']} ;//
-  res.redirect(`/urls/${shortURL}`);         
+  urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.session['user_id']};//
+  res.redirect(`/urls/${shortURL}`);
 });
 app.get("/urls/:shortURL", (req, res) => {
   const user = users[req.session['user_id']];
@@ -91,7 +84,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     delete urlDatabase[shortURL];
   }
   res.redirect('/urls');
-})
+});
 app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   const user = users[req.session['user_id']];
@@ -99,7 +92,7 @@ app.post("/urls/:id", (req, res) => {
     urlDatabase[shortURL].longURL = req.body.newLongURL;
   }
   res.redirect(`/urls`);
-})
+});
 app.get("/register", (req, res) => {
   const user = users[req.session['user_id']];
   const templateVars = { user };
@@ -109,7 +102,7 @@ app.post("/register", (req, res) => {
   let email = req.body.email;
   let password = bcrypt.hashSync(req.body.password, salt);
   if (email !== "" && password !== "") {
-    if(!isRegisteredBefore(users, email)) {
+    if (!isRegisteredBefore(users, email)) {
       let id = generateRandomString();
       let newUser = {id, email, password};
       users[id] = newUser;
@@ -132,8 +125,8 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
-  if(isRegisteredBefore(users, email)) {
-    if(isPasswordMatch(users, email, password)){
+  if (isRegisteredBefore(users, email)) {
+    if (isPasswordMatch(users, email, password)) {
       req.session['user_id'] = findId(users, email);
       res.redirect(`/urls`);
     } else {
