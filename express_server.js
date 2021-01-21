@@ -10,6 +10,7 @@ app.set('view engine', 'ejs');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter} = require("./helpers/userHelper");
+const fs = require('fs');
 
 
 
@@ -18,8 +19,14 @@ const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
-};
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
+  aliBas: { longURL: "http://www.youtube.com", userID: "aJ48lW"}
+}
+
+//fs.readFile(`./db/urlDatabase.json`, 'utf8', (data) => JSON.parse(data))
+
+
+  
 
 const users = { 
   "aJ48lW": {
@@ -41,6 +48,8 @@ app.get("/", (req, res) => {
   res.redirect("/urls");
 });
 app.get("/urls", (req, res) => {
+  console.log(urlDatabase)
+
   let urlDatabas = filter(urlDatabase, req.cookies['user_id']);
   const user = users[req.cookies['user_id']];
   const templateVars = { urls: urlDatabas, user: user};
