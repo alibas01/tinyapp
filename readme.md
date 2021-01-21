@@ -22,7 +22,7 @@ TinyApp is providing a secure experience with encrypted cookies and secret to on
 - bcrypt
 - body-parse
 - cookie-session
-- Morgan
+- morgan
 - nodemon
 - method-override
 

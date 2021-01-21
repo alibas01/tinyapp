@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 
+// generates a random string (not starting with a number and length is 6 )
 const generateRandomString = function() {
   let result = '';
   const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -28,7 +29,7 @@ const filter = function(urlDatabase, userID) {
   }
   return result;
 };
-
+// checks if an email registered before
 const isRegisteredBefore = function(users, email) {
   for (let id in users) {
     if (users[id].email === email) {
@@ -47,6 +48,7 @@ const findId = function(users, email) {
   }
   return null;
 };
+// checks if the hashed password matches
 const isPasswordMatch = function(users, email, password) {
   const id = findId(users, email);
   for (let user in users) {
@@ -56,8 +58,17 @@ const isPasswordMatch = function(users, email, password) {
   }
   return false;
 };
+// checks if the URL exists in the old fashion database.
+const isOldURL = function(givenURL, urlDatabas) {
+  for (let shortURL in urlDatabas) {
+    if (urlDatabas[shortURL] === givenURL) {
+      return true;
+    }
+  }
+  return false;
+};
 
 
 
 
-module.exports = { generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter };
+module.exports = { generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter, isOldURL };
