@@ -23,6 +23,25 @@ const generateRandomString = function() {
 //     password: "dishwasher-funk"
 //   }
 // }
+// const urlDatabase = {
+//   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+//   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+// };
+// const urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+// };
+const filter = function (urlDatabase, userID) {// this function helps to filter the new fashion database with userid and also turns it into old fashion one.
+  let result = {};
+  if (userID !== undefined) {
+    for (let shortURL in urlDatabase) {
+      if(urlDatabase[shortURL].userID === userID) {
+        result[shortURL] = urlDatabase[shortURL].longURL;
+      }
+    }
+  }
+  return result;
+}
 
 const isRegisteredBefore = function (users, email) {
   for (let id in users) {
@@ -54,4 +73,4 @@ const isPasswordMatch = function (users, email, password) {
 
 
 
-module.exports = { generateRandomString, isRegisteredBefore, findId, isPasswordMatch };
+module.exports = { generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter };
