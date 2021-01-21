@@ -5,6 +5,8 @@ const app = express();
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 const morgan = require('morgan');
+const methodOverride = require('method-override')
+app.use(methodOverride('_method'));
 app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
 const cookieSession = require('cookie-session');
@@ -81,7 +83,7 @@ app.get("/u/:shortURL", (req, res) => {
   let URL = urlDatabas[req.params.shortURL];
   res.redirect(URL);
 });
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
   const user = users[req.session['user_id']];
   if (user !== undefined) {
@@ -89,7 +91,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   }
   res.redirect('/urls');
 });
-app.post("/urls/:id", (req, res) => {
+app.put("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   const user = users[req.session['user_id']];
   let databas = filter(urlDatabase, req.session['user_id']);

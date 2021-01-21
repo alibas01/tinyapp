@@ -3,7 +3,7 @@
 <head>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>URL - TinyApp Example</title>
+  <title>URL - TinyApp</title>
 </head>
 <%- include('../partials/_header') %>
 <body>
@@ -21,7 +21,7 @@
         <h5 class="card-title">Edit</h5>
         <p class="card-text">New URL: 
           <td>
-          <form method="POST" action="/urls/<%=shortURL%>">
+          <form method="POST" action="/urls/<%=shortURL%>?_method=PUT">
           <input type="url" name="newLongURL" value ="<%=longURL%>">
           <button type="submit" class="btn btn-primary">Submit</button>
           
