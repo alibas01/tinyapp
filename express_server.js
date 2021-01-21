@@ -71,17 +71,23 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 app.get("/u/:shortURL", (req, res) => {
   let urlDatabas = filter(urlDatabase, req.cookies['user_id']);
-  let URL = urlDatabas[req.params.shortURL];//
+  let URL = urlDatabas[req.params.shortURL];
   res.redirect(URL);
 });
 app.post("/urls/:shortURL/delete", (req, res) => {
   let shortURL = req.params.shortURL;
-  delete urlDatabase[shortURL];//
+  const user = users[req.cookies['user_id']];
+  if (user !== undefined) {
+    delete urlDatabase[shortURL];
+  }
   res.redirect('/urls');
 })
 app.post("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
-  urlDatabase[shortURL].longURL = req.body.newLongURL;//
+  const user = users[req.cookies['user_id']];
+  if (user !== undefined) {
+    urlDatabase[shortURL].longURL = req.body.newLongURL;
+  }
   res.redirect(`/urls`);
 })
 app.get("/register", (req, res) => {

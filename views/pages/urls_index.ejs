@@ -20,36 +20,43 @@
       top:5px;
       box-shadow: none;
     }
+    
   </style>
 </head>
 <%- include('../partials/_header') %>
 <body>
-    <main style="margin: 1em;">
-    <h3>My URLs</h3>
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Short URL</th>
-          <th scope="col">Long URL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for(let url in urls) { %>
-          <tr>
-            
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
-            <td>
-              <form method="POST" action="/urls/<%=url%>/delete">
-              <button>DELETE </button></form>
-            </form>
-            </td>  
-            <td>
-              <form action="/urls/<%=url%>">
-              <button>EDIT </button></form>
-            </form>
-            </td> 
-          </tr>
+    
+      
+      <% if (!user) { %>
+        <h3>Caution:</h3> <h4><b>Please login or register for the URL list.</h4></b>
+        <% } else { %>
+          <main style="margin: 1em;">
+            <h3>My URLs</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Short URL</th>
+                  <th scope="col">Long URL</th>
+                </tr>
+              </thead>
+          <tbody>
+          <% for(let url in urls) { %>
+            <tr>
+              
+              <td><%= url %></td>
+              <td><%= urls[url] %></td>
+              <td>
+                <form method="POST" action="/urls/<%=url%>/delete">
+                <button>DELETE </button></form>
+              </form>
+              </td>  
+              <td>
+                <form action="/urls/<%=url%>">
+                <button>EDIT </button></form>
+              </form>
+              </td> 
+            </tr>
+          <% } %>
         <% } %>
       </tbody>
     </table>
