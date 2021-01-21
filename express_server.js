@@ -9,6 +9,8 @@ app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+const bcrypt = require('bcrypt');
+const salt = 10
 const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter} = require("./helpers/userHelper");
 const fs = require('fs');
 
@@ -31,8 +33,8 @@ const urlDatabase = {
 const users = { 
   "aJ48lW": {
     id: "aJ48lW", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+    email: "alibas01@gmail.com", 
+    password: "12qw"
   },
  "user2RandomID": {
     id: "user2RandomID", 
@@ -48,8 +50,6 @@ app.get("/", (req, res) => {
   res.redirect("/urls");
 });
 app.get("/urls", (req, res) => {
-  console.log(urlDatabase)
-
   let urlDatabas = filter(urlDatabase, req.cookies['user_id']);
   const user = users[req.cookies['user_id']];
   const templateVars = { urls: urlDatabas, user: user};
@@ -57,8 +57,6 @@ app.get("/urls", (req, res) => {
 });
 app.get("/urls/new", (req, res) => {
   const user = users[req.cookies['user_id']];
-  console.log(req.cookies['user_id'])
-  console.log(users[req.cookies['user_id']]);
   const templateVars = {user: user};
   if (user !== undefined) {
   res.render("pages/urls_new", templateVars);
@@ -101,21 +99,18 @@ app.post("/urls/:id", (req, res) => {
 })
 app.get("/register", (req, res) => {
   const user = users[req.cookies['user_id']];
-  let email = req.body.email;
-  let password = req.body.password;
-  const templateVars = { email, password, user };
+  const templateVars = { user };
   res.render("pages/urls_register", templateVars);
 });
 app.post("/register", (req, res) => {
   let email = req.body.email;
-  let password = req.body.password;
+  let password = bcrypt.hashSync(req.body.password, salt);
   if (email !== "" && password !== "") {
     if(!isRegisteredBefore(users, email)) {
       let id = generateRandomString();
       let newUser = {id, email, password};
       users[id] = newUser;
       res.cookie('user_id', id);
-      console.log(users);//
       res.redirect("/urls");
     } else {
       res.status(400);
@@ -128,9 +123,7 @@ app.post("/register", (req, res) => {
 });
 app.get("/login", (req, res) => {
   const user = users[req.cookies['user_id']];
-  let email = req.body.email;
-  let password = req.body.password;
-  const templateVars = { email: email, password: password, user: user };
+  const templateVars = { user: user };
   res.render("pages/urls_login", templateVars);
 });
 app.post("/login", (req, res) => {
@@ -150,7 +143,6 @@ app.post("/login", (req, res) => {
   }
 });
 app.get("/logout", (req, res) => {
-  //res.clearCookie('username');
   res.clearCookie('user_id');
   res.redirect(`/urls`);
 });

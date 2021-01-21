@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 const generateRandomString = function() {
   let result = '';
   const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -63,7 +65,7 @@ const findId = function (users, email) {
 const isPasswordMatch = function (users, email, password) {
   const id = findId(users, email)
   for (let user in users) {
-    if (user === id && users[user].password === password) {
+    if (user === id && bcrypt.compareSync(password, users[user].password)) {
       return true;
     }
   }
