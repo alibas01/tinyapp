@@ -1,7 +1,8 @@
 # TinyApp Project
 
 TinyApp is a full stack web application built with Node and Express that allows users to shorten long URLs (à la bit.ly).
-A software that provides you a safe way to keep your web addreses in a short format. 
+A software that provides you a secure way to keep your web addreses in a short format.
+TinyApp is providing a secure experience with encrypted cookies and secret to only users passwords. 
 
 ## Final Product
 
@@ -23,8 +24,9 @@ A software that provides you a safe way to keep your web addreses in a short for
 - cookie-session
 - Morgan
 - nodemon
+- method-override
 
 ## Getting Started
 
-- Install all dependencies (using the `npm install` command).
+- Install all dependencies (using the `npm install <package> --save` command).
 - Run the development web server using the `npm start` command.
