@@ -15,7 +15,7 @@ const generateRandomString = function() {
 };
 
 // Assignment asked us to generate a new fashion URLdatabase object
-// This function(filter) has to functions:
+// This function(filter) has two achievements:
 // 1. Helps to filter the new fashion database with userid
 // 2. Turns it into old fashion URLdatabase.
 const filter = function(urlDatabase, userID) {
@@ -29,6 +29,7 @@ const filter = function(urlDatabase, userID) {
   }
   return result;
 };
+
 // checks if an email registered before
 const isRegisteredBefore = function(users, email) {
   for (let id in users) {
@@ -38,6 +39,7 @@ const isRegisteredBefore = function(users, email) {
   }
   return false;
 };
+
 //asignment defines findID by getUserByEmail however I completed this function before
 //and build everything on it. I adjusted my test file accordingly
 const findId = function(users, email) {
@@ -48,6 +50,7 @@ const findId = function(users, email) {
   }
   return null;
 };
+
 // checks if the hashed password matches
 const isPasswordMatch = function(users, email, password) {
   const id = findId(users, email);
@@ -58,6 +61,7 @@ const isPasswordMatch = function(users, email, password) {
   }
   return false;
 };
+
 // checks if the URL exists in the old fashion database.
 const isOldURL = function(givenURL, urlDatabas) {
   for (let shortURL in urlDatabas) {

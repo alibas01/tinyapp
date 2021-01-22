@@ -29,4 +29,5 @@ TinyApp is providing a secure experience with encrypted cookies and secret to on
 ## Getting Started
 
 - Install all dependencies (using the `npm install <package> --save` command).
+- For dev dependencies please use (`npm install <package> --save-dev`) command.
 - Run the development web server using the `npm start` command.

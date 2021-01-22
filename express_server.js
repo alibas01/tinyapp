@@ -1,33 +1,36 @@
-
-const PORT = 8080;
+//exported functions
+const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter, isOldURL} = require("./helpers/userHelper");
+// declared variables
 const express = require("express");
-const app = express();
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
 const morgan = require('morgan');
 const methodOverride = require('method-override')
+const cookieSession = require('cookie-session');
+const app = express();
+const bcrypt = require('bcrypt');
+// app.use executions
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 app.use(morgan('tiny'));
-app.set('view engine', 'ejs');
-const cookieSession = require('cookie-session');
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2']
 }));
-const bcrypt = require('bcrypt');
+// ejs set
+app.set('view engine', 'ejs');
+// default port 8080, salt = 10,
 const salt = 10;
-const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter, isOldURL} = require("./helpers/userHelper");
-//const fs = require('fs');
+const PORT = 8080;
 
+
+// URL database
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
   aliBas: { longURL: "http://www.youtube.com", userID: "aJ48lW"}
 };
 
-//fs.readFile(`./db/urlDatabase.json`, 'utf8', (data) => JSON.parse(data))
-
-
+// user database
 const users = {
   "aJ48lW": {
     id: "aJ48lW",
@@ -42,17 +45,20 @@ const users = {
 };
 
 
-
-
+// GET /
 app.get("/", (req, res) => {
   res.redirect("/urls");
 });
+
+// GET /urls
 app.get("/urls", (req, res) => {
   let urlDatabas = filter(urlDatabase, req.session['user_id']);
   const user = users[req.session['user_id']];
   const templateVars = { urls: urlDatabas, user: user};
   res.render("pages/urls_index", templateVars);
 });
+
+// GET /urls/new
 app.get("/urls/new", (req, res) => {
   const user = users[req.session['user_id']];
   const templateVars = {user: user};
@@ -62,11 +68,15 @@ app.get("/urls/new", (req, res) => {
     res.redirect("/login");
   }
 });
+
+// POST /urls
 app.post("/urls", (req, res) => {
   let shortURL = generateRandomString();
   urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.session['user_id']};
   res.redirect(`/urls/${shortURL}`);
 });
+
+// GET /urls/:shortURL
 app.get("/urls/:shortURL", (req, res) => {
   const user = users[req.session['user_id']];
   let urlDatabas = filter(urlDatabase, req.session['user_id']);
@@ -78,11 +88,17 @@ app.get("/urls/:shortURL", (req, res) => {
     res.redirect('/urls');
   }
 });
+
+// GET /u/:shortURL
 app.get("/u/:shortURL", (req, res) => {
-  let urlDatabas = filter(urlDatabase, req.session['user_id']);
-  let URL = urlDatabas[req.params.shortURL];
+  let URL = urlDatabase[req.params.shortURL].longURL;
+  if (URL.substring(0,7) !== 'http://') {
+    URL = 'http://' + URL;
+  }
   res.redirect(URL);
 });
+
+// DELETE /urls/:shortURL
 app.delete("/urls/:shortURL", (req, res) => {
   let shortURL = req.params.shortURL;
   const user = users[req.session['user_id']];
@@ -91,6 +107,8 @@ app.delete("/urls/:shortURL", (req, res) => {
   }
   res.redirect('/urls');
 });
+
+// PUT /urls/:id
 app.put("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   const user = users[req.session['user_id']];
@@ -100,14 +118,14 @@ app.put("/urls/:id", (req, res) => {
     res.redirect(`/urls`);
   } else if (!user) {
     res.status(400);
-    res.send(`<html><body><h1>Error:400</h1> <h2><b>Please login!!!</h2><h3><a href="/login">Login</a></h3></b></body></html>`);
+    res.send(`<html><body><h1>Error:404</h1> <h2><b>Please login!!!</h2><h3><a href="/login">Login</a></h3></b></body></html>`);
   } else {
     res.status(400);
-    res.send(`<html><body><h1>Error:400</h1> <h2><b>URL exists in your list</h2><h3><a href="/urls">My URLs</a></h3></b></body></html>`);
-    //res.redirect('/urls');
-  }
-  
+    res.send(`<html><body><h1>Error:404</h1> <h2><b>New URL you entered, exists in your list</h2><h3><a href="/urls">My URLs</a></h3></b></body></html>`);
+  } 
 });
+
+// GET /register
 app.get("/register", (req, res) => {
   const user = users[req.session['user_id']];
   const templateVars = { user };
@@ -117,6 +135,8 @@ app.get("/register", (req, res) => {
     res.redirect(`/urls`);
   }
 });
+
+// POST /register
 app.post("/register", (req, res) => {
   let email = req.body.email;
   let password = bcrypt.hashSync(req.body.password, salt);
@@ -136,6 +156,9 @@ app.post("/register", (req, res) => {
     res.send('<html><body><h1>Error:400</h1> <h2><b>Email or Password cannot be empty!!!</h2><h3><a href="/register">Register</a></h3></b></body></html>\n');
   }
 });
+
+
+// GET /login
 app.get("/login", (req, res) => {
   const user = users[req.session['user_id']];
   const templateVars = { user: user };
@@ -145,6 +168,8 @@ app.get("/login", (req, res) => {
     res.redirect(`/urls`);
   }
 });
+
+// POST /login
 app.post("/login", (req, res) => {
   let email = req.body.email;
   let password = req.body.password;
@@ -158,17 +183,17 @@ app.post("/login", (req, res) => {
     }
   } else {
     res.status(403);
-    res.send(`<html><body><h1>Error:403</h1> <h2><b>This email(${email}) is not registered!!!\n Please Register!</h2><h3><a href="/register">Register</a></h3></b></body></html>\n`);
+    res.send(`<html><body><h1>Error:403</h1> <h2><b>This email(${email}) is not registered!!!\n Please Register first!</h2><h3><a href="/register">Register</a></h3></b></body></html>\n`);
   }
 });
+
+// GET /logout
 app.get("/logout", (req, res) => {
   req.session['user_id'] = null;
   res.redirect(`/urls`);
 });
 
-
-
+// server listen on port 8080
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`TinyApp listening on port ${PORT}!`);
 });
-
