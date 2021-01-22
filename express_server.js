@@ -20,9 +20,9 @@ const {generateRandomString, isRegisteredBefore, findId, isPasswordMatch, filter
 //const fs = require('fs');
 
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
-  aliBas: { longURL: "http://www.youtube.com", userID: "aJ48lW"}
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW", visit: 0 },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW", visit: 0 },
+  aliBas: { longURL: "http://www.youtube.com", userID: "aJ48lW", visit: 0}
 };
 
 //fs.readFile(`./db/urlDatabase.json`, 'utf8', (data) => JSON.parse(data))
@@ -71,7 +71,13 @@ app.get("/urls/:shortURL", (req, res) => {
   const user = users[req.session['user_id']];
   let urlDatabas = filter(urlDatabase, req.session['user_id']);
   let shortURL = req.params.shortURL;
-  const templateVars = { shortURL: shortURL, longURL: urlDatabas[shortURL], user: user};
+  if (urlDatabase[shortURL].visit) {
+    urlDatabase[shortURL].visit += 1
+  } else {
+    urlDatabase[shortURL].visit = 1;
+  }
+  console.log(urlDatabase);
+  const templateVars = { shortURL: shortURL, longURL: urlDatabas[shortURL], user: user, visit: urlDatabase[shortURL].visit, visitor: req.session['user_id'], date: new Date()};
   if (user) {
     res.render("pages/urls_show", templateVars);
   } else {
@@ -94,9 +100,10 @@ app.delete("/urls/:shortURL", (req, res) => {
 app.put("/urls/:id", (req, res) => {
   let shortURL = req.params.id;
   const user = users[req.session['user_id']];
-  let databas = filter(urlDatabase, req.session['user_id']);
+  let databas = filter(urlDatabase, req.session['user_id']);  
   if (user && !isOldURL(req.body.newLongURL, databas)) {
     urlDatabase[shortURL].longURL = req.body.newLongURL;
+    urlDatabase[shortURL].visit = urlDatabase[shortURL].visit + 1;
     res.redirect(`/urls`);
   } else if (!user) {
     res.status(400);
