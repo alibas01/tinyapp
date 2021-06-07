@@ -7,25 +7,25 @@ TinyApp is providing a secure experience with encrypted cookies and secret to on
 ## Final Product
 
 <p align="center">
-<img src="https://github.com/alibas01/tinyapp/blob/master/docs/Create_new.png" width="400" height="auto" />
+<img src="https://github.com/alibas01/tinyapp/blob/master/docs/Create_new.png" width="500" height="auto" />
 </p>
 <p align="center">
-<img src="https://github.com/alibas01/tinyapp/blob/master/docs/MyURLs_loggedin.png" width="400" height="auto" />
+<img src="https://github.com/alibas01/tinyapp/blob/master/docs/MyURLs_loggedin.png" width="500" height="auto" />
 </p>
 <p align="center">
-<img src="https://github.com/alibas01/tinyapp/blob/master/docs/editpage.png" width="400" height="auto" />
+<img src="https://github.com/alibas01/tinyapp/blob/master/docs/editpage.png" width="500" height="auto" />
 </p>
 <p align="center">
-<img src="https://github.com/alibas01/tinyapp/blob/master/docs/error_register.png" width="400" height="auto" />
+<img src="https://github.com/alibas01/tinyapp/blob/master/docs/error_register.png" width="500" height="auto" />
 </p>
 <p align="center">
-<img src="https://github.com/alibas01/tinyapp/blob/master/docs/login_page.png" width="400" height="auto" />
+<img src="https://github.com/alibas01/tinyapp/blob/master/docs/login_page.png" width="500" height="auto" />
 </p>
 <p align="center">
-<img src="https://github.com/alibas01/tinyapp/blob/master/docs/register_page.png" width="400" height="auto" />
+<img src="https://github.com/alibas01/tinyapp/blob/master/docs/register_page.png" width="500" height="auto" />
 </p>
 <p align="center">
-<img src="https://github.com/alibas01/tinyapp/blob/master/docs/warning_urls.png" width="400" height="auto" />
+<img src="https://github.com/alibas01/tinyapp/blob/master/docs/warning_urls.png" width="500" height="auto" />
 </p>
 
 
