@@ -71,9 +71,15 @@ app.get("/urls/new", (req, res) => {
 
 // POST /urls
 app.post("/urls", (req, res) => {
-  let shortURL = generateRandomString();
-  urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.session['user_id']};
-  res.redirect(`/urls/${shortURL}`);
+  const user = users[req.session['user_id']];
+  if (user) {
+    let shortURL = generateRandomString();
+    urlDatabase[shortURL] = {longURL: req.body.longURL, userID: req.session['user_id']};
+    res.redirect(`/urls/${shortURL}`);
+  } else {
+    res.status(400);
+    res.send(`Error:404  Please login to add a new URL!!!`);
+  }
 });
 
 // GET /urls/:shortURL
